@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">AndroidSemFour</string>
+    <string name="kazan">Kazan</string>
+    <string name="_9_c">9°C</string>
+    <string name="weather_in_near_cities">Weather in near cities</string>
 </resources>
