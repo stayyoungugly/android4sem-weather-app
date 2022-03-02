@@ -18,17 +18,12 @@ private const val TEMP_10_MINUS = -10.0
 private const val TEMP_20_MINUS = -20.0
 private const val TEMP_40_MINUS = -40.0
 
-
 class CityHolder(
     private val binding: ItemCityBinding,
     private val action: (Int) -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {
 
     private var city: City? = null
-
-//    private val options = RequestOptions()
-//        .priority(Priority.HIGH)
-//        .diskCacheStrategy(DiskCacheStrategy.ALL)
 
     fun bind(item: City) {
         this.city = item
@@ -37,19 +32,11 @@ class CityHolder(
             val tvTempText = item.main.temp.toString() + "°C"
             tvTemp.text = tvTempText
             temperatureColors(item.main.temp, binding.tvTemp)
-
             itemView.setOnClickListener {
                 action(item.id)
             }
-//            glide.load(generateIcon(item.weather[0].icon))
-//                .apply(options)
-//                .into(ivImage)
         }
     }
-
-//    private fun generateIcon(iconId: String): String {
-//        return "http://openweathermap.org/img/wn/$iconId@2x.png"
-//    }
 
     private fun temperatureColors(temp: Double, textView: TextView) {
         when (temp) {

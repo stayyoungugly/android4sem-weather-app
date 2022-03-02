@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.SearchView
 import androidx.core.app.ActivityCompat
@@ -19,6 +20,7 @@ import com.itis.androidsemfour.data.repository.WeatherRepository
 import com.itis.androidsemfour.data.response.City
 import com.itis.androidsemfour.databinding.FragmentListBinding
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 private const val CNT_10 = 10
 private const val DEFAULT_LAT = 51.59
@@ -121,7 +123,7 @@ class SearchListFragment : Fragment(R.layout.fragment_list) {
                             R.id.action_searchFragment_to_detailsFragment,
                             bundle
                         )
-                    } catch (ex: Exception) {
+                    } catch (ex: HttpException) {
                         Snackbar.make(
                             binding.root,
                             "City Not Found",
