@@ -2,5 +2,16 @@
     <string name="app_name">AndroidSemFour</string>
     <string name="kazan">Kazan</string>
     <string name="_9_c">9°C</string>
-    <string name="weather_in_near_cities">Weather in near cities</string>
+    <string name="weather_in_nearby_cities">Weather in nearby cities</string>
+    <string name="_1230_p">1230 P</string>
+    <string name="pressure">PRESSURE</string>
+    <string name="_100">100</string>
+    <string name="humidity">HUMIDITY</string>
+    <string name="north_west">North-West</string>
+    <string name="_32_km_h">32 km/h</string>
+    <string name="direction">DIRECTION</string>
+    <string name="wind">WIND</string>
+    <string name="kazan_caps">KAZAN</string>
+    <string name="feels_like_10_c">Feels like -10°C</string>
+    <string name="sunny">SUNNY</string>
 </resources>

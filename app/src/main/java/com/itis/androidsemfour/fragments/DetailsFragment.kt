@@ -10,13 +10,11 @@ import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.itis.androidsemfour.R
-import com.itis.androidsemfour.adapter.CityAdapter
 import com.itis.androidsemfour.data.repository.WeatherRepository
-import com.itis.androidsemfour.data.response.City
 import com.itis.androidsemfour.data.response.WeatherResponse
 import com.itis.androidsemfour.databinding.FragmentDetailsBinding
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
+import timber.log.Timber
 
 class DetailsFragment : Fragment(R.layout.fragment_details) {
     private lateinit var binding: FragmentDetailsBinding
@@ -43,8 +41,12 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
 
     private fun getCityWeatherData(id: Int) {
         lifecycleScope.launch {
-            val weatherResponse = repository.getWeather(id)
-            setCityWeatherData(weatherResponse)
+            try {
+                val weatherResponse = repository.getWeather(id)
+                setCityWeatherData(weatherResponse)
+            } catch (ex: Exception) {
+                Timber.e(ex.message.toString())
+            }
         }
     }
 

@@ -4,7 +4,7 @@ import com.itis.androidsemfour.data.response.CityList
 import com.itis.androidsemfour.data.response.WeatherResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
-// http://openweathermap.org/img/wn/10d@2x.png
+
 interface Api {
     @GET("weather?")
     suspend fun getWeatherByName(@Query("q") city: String): WeatherResponse

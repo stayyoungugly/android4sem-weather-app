@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.SearchView
 import androidx.core.app.ActivityCompat
@@ -21,6 +20,8 @@ import com.itis.androidsemfour.data.response.City
 import com.itis.androidsemfour.databinding.FragmentListBinding
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
+import timber.log.Timber
+import java.lang.Exception
 
 private const val CNT_10 = 10
 private const val DEFAULT_LAT = 51.59
@@ -54,15 +55,19 @@ class SearchListFragment : Fragment(R.layout.fragment_list) {
 
     private fun createCityRecyclerView() {
         lifecycleScope.launch {
-            cities = repository.getCities(userLatitude, userLongitude, CNT_10)
-            cityAdapter = CityAdapter(cities) {
-                bundle.putInt("id", it)
-                findNavController().navigate(
-                    R.id.action_searchFragment_to_detailsFragment,
-                    bundle
-                )
+            try {
+                cities = repository.getCities(userLatitude, userLongitude, CNT_10)
+                cityAdapter = CityAdapter(cities) {
+                    bundle.putInt("id", it)
+                    findNavController().navigate(
+                        R.id.action_searchFragment_to_detailsFragment,
+                        bundle
+                    )
+                }
+                binding.rvCities.adapter = cityAdapter
+            } catch (ex: Exception) {
+                Timber.e(ex.message.toString())
             }
-            binding.rvCities.adapter = cityAdapter
         }
     }
 
@@ -129,6 +134,7 @@ class SearchListFragment : Fragment(R.layout.fragment_list) {
                             "City Not Found",
                             Snackbar.LENGTH_LONG
                         ).show()
+                        Timber.e(ex.message.toString())
                     }
                 }
                 return false

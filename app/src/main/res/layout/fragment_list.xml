@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background"
     android:paddingHorizontal="10dp"
     android:paddingTop="20dp"
     android:paddingBottom="30dp">
@@ -11,21 +12,22 @@
     <SearchView
         android:id="@+id/sv_cities"
         android:layout_width="match_parent"
-        android:layout_height="20dp"
+        android:layout_height="50dp"
         android:layout_marginTop="20dp"
+        android:background="@drawable/back"
         android:iconifiedByDefault="false"
         android:queryHint="Enter city name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-    </SearchView>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_cities"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:text="@string/weather_in_near_cities"
+        android:fontFamily="@font/font_black"
+        android:text="@string/weather_in_nearby_cities"
         android:textColor="@color/black"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"

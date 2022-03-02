@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:paddingTop="10dp"
     android:paddingBottom="20dp">
 
     <ImageView
@@ -14,6 +16,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_weather_name"
+        tools:ignore="ContentDescription"
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
@@ -21,7 +24,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:text="SUNNY"
+        android:fontFamily="@font/font_book"
+        android:text="@string/sunny"
         android:textColor="@color/black"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -33,6 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:fontFamily="@font/font_bold"
         android:text="@string/_9_c"
         android:textColor="@color/black"
         android:textSize="56sp"
@@ -45,7 +50,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:text="Feels like -10°C"
+        android:fontFamily="@font/font_book"
+        android:text="@string/feels_like_10_c"
         android:textColor="@color/black"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -57,7 +63,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="KAZAN"
+        android:fontFamily="@font/font_bold"
+        android:text="@string/kazan_caps"
         android:textColor="@color/black"
         android:textSize="32sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -69,7 +76,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:text="WIND"
+        android:fontFamily="@font/font_black"
+        android:text="@string/wind"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="20sp"
@@ -81,10 +89,24 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_city" />
 
     <TextView
+        android:id="@+id/tv_wind_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/font_bold"
+        android:text="@string/_32_km_h"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/tv_wind"
+        app:layout_constraintStart_toStartOf="@+id/tv_wind"
+        app:layout_constraintTop_toBottomOf="@+id/tv_wind" />
+
+    <TextView
         android:id="@+id/tv_direction"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="DIRECTION"
+        android:fontFamily="@font/font_black"
+        android:text="@string/direction"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="20sp"
@@ -95,25 +117,14 @@
         app:layout_constraintTop_toTopOf="@+id/tv_wind" />
 
     <TextView
-        android:id="@+id/tv_wind_number"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="32 km/h"
-        android:textColor="@color/black"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="@+id/tv_wind"
-        app:layout_constraintStart_toStartOf="@+id/tv_wind"
-        app:layout_constraintTop_toBottomOf="@+id/tv_wind" />
-
-    <TextView
         android:id="@+id/tv_direction_peak"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="North-West"
+        android:fontFamily="@font/font_bold"
+        android:text="@string/north_west"
         android:textColor="@color/black"
-        android:textSize="16sp"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="@+id/tv_direction"
         app:layout_constraintStart_toStartOf="@+id/tv_direction"
         app:layout_constraintTop_toBottomOf="@+id/tv_direction" />
@@ -123,7 +134,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:text="HUMIDITY"
+        android:fontFamily="@font/font_black"
+        android:text="@string/humidity"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="20sp"
@@ -138,9 +150,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="100"
+        android:fontFamily="@font/font_bold"
+        android:text="@string/_100"
         android:textColor="@color/black"
-        android:textSize="16sp"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="@+id/tv_humidity"
         app:layout_constraintStart_toStartOf="@+id/tv_humidity"
         app:layout_constraintTop_toBottomOf="@+id/tv_humidity" />
@@ -150,7 +163,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:text="PRESSURE"
+        android:fontFamily="@font/font_black"
+        android:text="@string/pressure"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="20sp"
@@ -165,9 +179,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="1230 P"
+        android:fontFamily="@font/font_bold"
+        android:text="@string/_1230_p"
         android:textColor="@color/black"
-        android:textSize="16sp"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="@+id/tv_pressure"
         app:layout_constraintStart_toStartOf="@+id/tv_pressure"
         app:layout_constraintTop_toBottomOf="@+id/tv_pressure" />
