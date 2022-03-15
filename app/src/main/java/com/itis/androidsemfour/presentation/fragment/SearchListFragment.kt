@@ -1,4 +1,4 @@
-package com.itis.androidsemfour.fragments
+package com.itis.androidsemfour.presentation.fragment
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -13,7 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
-import com.itis.androidsemfour.adapter.CityAdapter
+import com.itis.androidsemfour.presentation.adapter.CityAdapter
 import com.itis.androidsemfour.R
 import com.itis.androidsemfour.data.repository.WeatherRepository
 import com.itis.androidsemfour.data.response.City

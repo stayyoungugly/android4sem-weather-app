@@ -1,4 +1,4 @@
-package com.itis.androidsemfour.fragments
+package com.itis.androidsemfour.presentation.fragment
 
 import android.os.Bundle
 import android.view.View

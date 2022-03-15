@@ -17,7 +17,7 @@
         android:theme="@style/Theme.AndroidSemFour"
         tools:targetApi="m">
         <activity
-            android:name=".activities.MainActivity"
+            android:name="com.itis.androidsemfour.presentation.activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

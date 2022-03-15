@@ -1,4 +1,4 @@
-package com.itis.androidsemfour.adapter.holder
+package com.itis.androidsemfour.presentation.adapter.holder
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

@@ -1,8 +1,8 @@
-package com.itis.androidsemfour.adapter
+package com.itis.androidsemfour.presentation.adapter
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.itis.androidsemfour.adapter.holder.CityHolder
+import com.itis.androidsemfour.presentation.adapter.holder.CityHolder
 import com.itis.androidsemfour.data.response.City
 
 class CityAdapter(

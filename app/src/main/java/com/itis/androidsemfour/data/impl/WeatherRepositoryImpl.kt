@@ -1,8 +1,9 @@
-package com.itis.androidsemfour.data.repository
+package com.itis.androidsemfour.data.impl
 
 import com.itis.androidsemfour.BuildConfig
 import com.itis.androidsemfour.data.response.WeatherResponse
 import com.itis.androidsemfour.data.api.Api
+import com.itis.androidsemfour.domain.repository.WeatherRepository
 import com.itis.androidsemfour.data.response.City
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
@@ -17,7 +18,7 @@ private const val QUERY_API_KEY = "appid"
 private const val QUERY_UNITS = "units"
 private const val UNITS = "metric"
 
-class WeatherRepository {
+class WeatherRepositoryImpl: WeatherRepository {
     private val apiKeyInterceptor = Interceptor { chain ->
         val original = chain.request()
         val newURL = original.url.newBuilder()
@@ -70,15 +71,15 @@ class WeatherRepository {
             .create(Api::class.java)
     }
 
-    suspend fun getWeather(cityName: String): WeatherResponse {
+    override suspend fun getWeather(cityName: String): WeatherResponse {
         return api.getWeatherByName(cityName)
     }
 
-    suspend fun getWeather(cityId: Int): WeatherResponse {
+    override suspend fun getWeather(cityId: Int): WeatherResponse {
         return api.getWeatherById(cityId)
     }
 
-    suspend fun getCities(lat: Double, lon: Double, cnt: Int): List<City> {
+    override suspend fun getCities(lat: Double, lon: Double, cnt: Int): List<City> {
         val cntString = cnt.toString()
         return api.getCities(lat, lon, cntString).list
     }
