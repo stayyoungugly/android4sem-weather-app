@@ -1,4 +1,4 @@
-package com.itis.androidsemfour.activities
+package com.itis.androidsemfour.presentation.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

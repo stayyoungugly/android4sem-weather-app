@@ -1,4 +1,4 @@
-package com.itis.androidsemfour.fragments
+package com.itis.androidsemfour.presentation.fragment
 
 import android.os.Bundle
 import android.view.View
@@ -10,19 +10,21 @@ import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.itis.androidsemfour.R
-import com.itis.androidsemfour.data.repository.WeatherRepository
-import com.itis.androidsemfour.data.response.WeatherResponse
+import com.itis.androidsemfour.data.api.mapper.CityMapper
+import com.itis.androidsemfour.data.api.mapper.WeatherMapper
+import com.itis.androidsemfour.data.impl.WeatherRepositoryImpl
 import com.itis.androidsemfour.databinding.FragmentDetailsBinding
+import com.itis.androidsemfour.di.DIContainer
+import com.itis.androidsemfour.domain.entity.WeatherEntity
+import com.itis.androidsemfour.domain.usecase.GetWeatherByIdUseCase
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import timber.log.Timber
 
 class DetailsFragment : Fragment(R.layout.fragment_details) {
     private lateinit var binding: FragmentDetailsBinding
     private lateinit var glide: RequestManager
-
-    private val repository by lazy {
-        WeatherRepository()
-    }
+    private lateinit var getWeatherByIdUseCase: GetWeatherByIdUseCase
 
     override fun onViewCreated(
         view: View,
@@ -30,10 +32,9 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     ) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentDetailsBinding.bind(view)
+        initObjects()
         val id = arguments?.getInt("id")
-
         glide = Glide.with(this)
-
         if (id != null) {
             getCityWeatherData(id)
         }
@@ -42,24 +43,24 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     private fun getCityWeatherData(id: Int) {
         lifecycleScope.launch {
             try {
-                val weatherResponse = repository.getWeather(id)
+                val weatherResponse = getWeatherByIdUseCase(id)
                 setCityWeatherData(weatherResponse)
-            } catch (ex: Exception) {
+            } catch (ex: HttpException) {
                 Timber.e(ex.message.toString())
             }
         }
     }
 
-    private fun setCityWeatherData(weatherResponse: WeatherResponse) {
-        val temp = weatherResponse.main.temp.toString() + "°С"
-        val tempFeels = "Feels like " + weatherResponse.main.feelsLike.toString() + "°С"
-        val cityName = weatherResponse.name
-        val pressure = weatherResponse.main.pressure.toString() + " PA"
-        val humidity = weatherResponse.main.humidity.toString() + "%"
-        val wind = weatherResponse.wind.speed.toString() + " m/s"
-        val weatherName = weatherResponse.weather[0].description
-        val weatherIcon = weatherResponse.weather[0].icon
-        val windDirection = weatherResponse.wind.deg
+    private fun setCityWeatherData(weatherEntity: WeatherEntity) {
+        val temp = weatherEntity.temp.toString() + "°С"
+        val tempFeels = "Feels like " + weatherEntity.feelsLike.toString() + "°С"
+        val cityName = weatherEntity.name
+        val pressure = weatherEntity.pressure.toString() + " PA"
+        val humidity = weatherEntity.humidity.toString() + "%"
+        val wind = weatherEntity.windSpeed.toString() + " m/s"
+        val weatherName = weatherEntity.description
+        val weatherIcon = weatherEntity.icon
+        val windDirection = weatherEntity.windDeg
         val options = RequestOptions()
             .priority(Priority.HIGH)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -94,5 +95,15 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         val url = "http://openweathermap.org/img/wn/$iconId@2x.png"
         print(url)
         return url
+    }
+
+    private fun initObjects() {
+        getWeatherByIdUseCase = GetWeatherByIdUseCase(
+            weatherRepository = WeatherRepositoryImpl(
+                api = DIContainer.api,
+                weatherMapper = WeatherMapper(),
+                cityMapper = CityMapper()
+            )
+        )
     }
 }
