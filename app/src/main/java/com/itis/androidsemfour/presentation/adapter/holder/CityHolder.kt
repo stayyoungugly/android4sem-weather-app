@@ -6,8 +6,8 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.itis.androidsemfour.R
-import com.itis.androidsemfour.data.response.City
 import com.itis.androidsemfour.databinding.ItemCityBinding
+import com.itis.androidsemfour.domain.entity.CityEntity
 
 private const val TEMP_50 = 50.0
 private const val TEMP_30 = 30.0
@@ -23,15 +23,15 @@ class CityHolder(
     private val action: (Int) -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    private var city: City? = null
+    private var city: CityEntity? = null
 
-    fun bind(item: City) {
+    fun bind(item: CityEntity) {
         this.city = item
         with(binding) {
             tvName.text = item.name
-            val tvTempText = item.main.temp.toString() + "°C"
+            val tvTempText = item.temp.toString() + "°C"
             tvTemp.text = tvTempText
-            temperatureColors(item.main.temp, binding.tvTemp)
+            temperatureColors(item.temp, binding.tvTemp)
             itemView.setOnClickListener {
                 action(item.id)
             }

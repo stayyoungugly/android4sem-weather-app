@@ -15,13 +15,17 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.itis.androidsemfour.presentation.adapter.CityAdapter
 import com.itis.androidsemfour.R
-import com.itis.androidsemfour.data.repository.WeatherRepository
-import com.itis.androidsemfour.data.response.City
+import com.itis.androidsemfour.data.api.mapper.CityMapper
+import com.itis.androidsemfour.data.api.mapper.WeatherMapper
+import com.itis.androidsemfour.data.impl.WeatherRepositoryImpl
 import com.itis.androidsemfour.databinding.FragmentListBinding
+import com.itis.androidsemfour.di.DIContainer
+import com.itis.androidsemfour.domain.entity.CityEntity
+import com.itis.androidsemfour.domain.usecase.GetCitiesUseCase
+import com.itis.androidsemfour.domain.usecase.GetWeatherByNameUseCase
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import timber.log.Timber
-import java.lang.Exception
 
 private const val CNT_10 = 10
 private const val DEFAULT_LAT = 51.59
@@ -30,18 +34,14 @@ private const val REQUEST_CODE_100 = 100
 
 class SearchListFragment : Fragment(R.layout.fragment_list) {
     val bundle = Bundle()
-
     private var userLatitude: Double = DEFAULT_LAT
     private var userLongitude: Double = DEFAULT_LON
-
     private lateinit var userLocation: FusedLocationProviderClient
     private lateinit var binding: FragmentListBinding
-    private lateinit var cities: List<City>
+    private lateinit var cities: List<CityEntity>
     private lateinit var cityAdapter: CityAdapter
-
-    private val repository by lazy {
-        WeatherRepository()
-    }
+    private lateinit var getCitiesUseCase: GetCitiesUseCase
+    private lateinit var getWeatherByNameUseCase: GetWeatherByNameUseCase
 
     override fun onViewCreated(
         view: View,
@@ -49,6 +49,7 @@ class SearchListFragment : Fragment(R.layout.fragment_list) {
     ) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentListBinding.bind(view)
+        initObjects()
         createLocationList()
         startCitySearch()
     }
@@ -56,7 +57,7 @@ class SearchListFragment : Fragment(R.layout.fragment_list) {
     private fun createCityRecyclerView() {
         lifecycleScope.launch {
             try {
-                cities = repository.getCities(userLatitude, userLongitude, CNT_10)
+                cities = getCitiesUseCase(userLatitude, userLongitude, CNT_10)
                 cityAdapter = CityAdapter(cities) {
                     bundle.putInt("id", it)
                     findNavController().navigate(
@@ -65,7 +66,7 @@ class SearchListFragment : Fragment(R.layout.fragment_list) {
                     )
                 }
                 binding.rvCities.adapter = cityAdapter
-            } catch (ex: Exception) {
+            } catch (ex: HttpException) {
                 Timber.e(ex.message.toString())
             }
         }
@@ -121,7 +122,7 @@ class SearchListFragment : Fragment(R.layout.fragment_list) {
             override fun onQueryTextSubmit(cityName: String): Boolean {
                 lifecycleScope.launch {
                     try {
-                        val cityWeather = repository.getWeather(cityName)
+                        val cityWeather = getWeatherByNameUseCase(cityName)
                         val cityId = cityWeather.id
                         bundle.putInt("id", cityId)
                         findNavController().navigate(
@@ -144,5 +145,22 @@ class SearchListFragment : Fragment(R.layout.fragment_list) {
                 return false
             }
         })
+    }
+
+    private fun initObjects() {
+        getWeatherByNameUseCase = GetWeatherByNameUseCase(
+            weatherRepository = WeatherRepositoryImpl(
+                api = DIContainer.api,
+                weatherMapper = WeatherMapper(),
+                cityMapper = CityMapper()
+            )
+        )
+        getCitiesUseCase = GetCitiesUseCase(
+            weatherRepository = WeatherRepositoryImpl(
+                api = DIContainer.api,
+                weatherMapper = WeatherMapper(),
+                cityMapper = CityMapper()
+            )
+        )
     }
 }

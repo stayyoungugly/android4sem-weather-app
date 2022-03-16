@@ -1,13 +1,13 @@
 package com.itis.androidsemfour.domain.repository
 
-import com.itis.androidsemfour.data.response.City
-import com.itis.androidsemfour.data.response.WeatherResponse
+import com.itis.androidsemfour.domain.entity.CityEntity
+import com.itis.androidsemfour.domain.entity.WeatherEntity
 
 interface WeatherRepository {
 
-    suspend fun getWeather(cityName: String): WeatherResponse
+    suspend fun getWeatherByName(cityName: String): WeatherEntity
 
-    suspend fun getWeather(cityId: Int): WeatherResponse
+    suspend fun getWeatherById(cityId: Int): WeatherEntity
 
-    suspend fun getCities(lat: Double, lon: Double, cnt: Int): List<City>
+    suspend fun getCities(lat: Double, lon: Double, cnt: Int): List<CityEntity>
 }
