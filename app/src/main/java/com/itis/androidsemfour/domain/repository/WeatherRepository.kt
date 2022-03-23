@@ -4,7 +4,6 @@ import com.itis.androidsemfour.domain.entity.CityEntity
 import com.itis.androidsemfour.domain.entity.WeatherEntity
 
 interface WeatherRepository {
-
     suspend fun getWeatherByName(cityName: String): WeatherEntity
 
     suspend fun getWeatherById(cityId: Int): WeatherEntity
