@@ -29,7 +29,7 @@ private const val DEFAULT_LON = 45.96
 private const val REQUEST_CODE_100 = 100
 
 class SearchListFragment : Fragment(R.layout.fragment_list) {
-    val bundle = Bundle()
+    private val bundle = Bundle()
     private var userLatitude: Double = DEFAULT_LAT
     private var userLongitude: Double = DEFAULT_LON
     private lateinit var viewModel: SearchListFragmentViewModel
@@ -73,15 +73,18 @@ class SearchListFragment : Fragment(R.layout.fragment_list) {
                 if (location != null) {
                     userLongitude = location.longitude
                     userLatitude = location.latitude
-                    Snackbar.make(binding.root, "Location was found", Snackbar.LENGTH_LONG)
-                        .show()
+                    showMessage("Location was found")
                 } else {
-                    Snackbar.make(binding.root, "Location was not found", Snackbar.LENGTH_LONG)
-                        .show()
+                    showMessage("Location was not found")
                 }
             }
         }
         createCityRecyclerView()
+    }
+
+    private fun showMessage(text: String) {
+        Snackbar.make(binding.root, text, Snackbar.LENGTH_LONG)
+            .show()
     }
 
     override fun onRequestPermissionsResult(
@@ -94,11 +97,7 @@ class SearchListFragment : Fragment(R.layout.fragment_list) {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     createLocationList()
                 } else {
-                    Snackbar.make(
-                        binding.root,
-                        "Geolocation access denied",
-                        Snackbar.LENGTH_SHORT
-                    ).show()
+                    showMessage("Geolocation access denied")
                 }
             }
         }
@@ -133,11 +132,7 @@ class SearchListFragment : Fragment(R.layout.fragment_list) {
                 }
                 binding.rvCities.adapter = cityAdapter
             }, onFailure = {
-                Snackbar.make(
-                    binding.root,
-                    "City Not Found",
-                    Snackbar.LENGTH_LONG
-                ).show()
+                showMessage("City not found")
             }
             )
         }
@@ -150,11 +145,7 @@ class SearchListFragment : Fragment(R.layout.fragment_list) {
                     bundle
                 )
             }, onFailure = {
-                Snackbar.make(
-                    binding.root,
-                    "City Not Found",
-                    Snackbar.LENGTH_LONG
-                ).show()
+                showMessage("City not found")
             })
         }
         viewModel.error.observe(viewLifecycleOwner) {

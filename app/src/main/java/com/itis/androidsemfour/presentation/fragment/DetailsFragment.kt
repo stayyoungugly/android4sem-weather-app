@@ -46,39 +46,12 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     }
 
     private fun setCityWeatherData(weatherEntity: WeatherEntity) {
-        val temp = weatherEntity.temp.toString() + "°С"
-        val tempFeels = "Feels like " + weatherEntity.feelsLike.toString() + "°С"
-        val cityName = weatherEntity.name
-        val pressure = weatherEntity.pressure.toString() + " PA"
-        val humidity = weatherEntity.humidity.toString() + "%"
-        val wind = weatherEntity.windSpeed.toString() + " m/s"
-        val weatherName = weatherEntity.description
+        binding.weather = weatherEntity
         val weatherIcon = weatherEntity.icon
-        val windDirection = weatherEntity.windDeg
         val options = RequestOptions()
             .priority(Priority.HIGH)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
-
         with(binding) {
-            tvTempNumber.text = temp
-            tvTempFeels.text = tempFeels
-            tvCity.text = cityName
-            tvPressureNumber.text = pressure
-            tvHumidityNumber.text = humidity
-            tvWindNumber.text = wind
-            tvWeatherName.text = weatherName
-            tvDirectionPeak.text = when (windDirection) {
-                in 0..22 -> "North"
-                in 23..67 -> "North-East"
-                in 68..112 -> "East"
-                in 113..157 -> "South-East"
-                in 158..202 -> "South"
-                in 203..247 -> "South-West"
-                in 248..292 -> "West"
-                in 293..337 -> "North-West"
-                in 337..361 -> "North"
-                else -> "Not found"
-            }
             glide.load(generateIcon(weatherIcon))
                 .apply(options)
                 .into(ivIcon)
