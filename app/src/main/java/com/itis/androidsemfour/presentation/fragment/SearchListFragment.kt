@@ -10,18 +10,20 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
-import com.itis.androidsemfour.presentation.adapter.CityAdapter
 import com.itis.androidsemfour.R
 import com.itis.androidsemfour.databinding.FragmentListBinding
 import com.itis.androidsemfour.di.DIContainer
+import com.itis.androidsemfour.presentation.adapter.CityAdapter
 import com.itis.androidsemfour.presentation.fragment.viewmodel.SearchListFragmentViewModel
 import com.itis.androidsemfour.utils.ViewModelFactory
 import kotlinx.coroutines.launch
 import timber.log.Timber
+
 
 private const val CNT_10 = 10
 private const val DEFAULT_LAT = 51.59
@@ -32,6 +34,7 @@ class SearchListFragment : Fragment(R.layout.fragment_list) {
     private val bundle = Bundle()
     private var userLatitude: Double = DEFAULT_LAT
     private var userLongitude: Double = DEFAULT_LON
+    private lateinit var options: NavOptions
     private lateinit var viewModel: SearchListFragmentViewModel
     private lateinit var userLocation: FusedLocationProviderClient
     private lateinit var binding: FragmentListBinding
@@ -46,6 +49,7 @@ class SearchListFragment : Fragment(R.layout.fragment_list) {
         initObjects()
         initObservers()
         createLocationList()
+        createCityRecyclerView()
         startCitySearch()
     }
 
@@ -79,11 +83,10 @@ class SearchListFragment : Fragment(R.layout.fragment_list) {
                 }
             }
         }
-        createCityRecyclerView()
     }
 
     private fun showMessage(text: String) {
-        Snackbar.make(binding.root, text, Snackbar.LENGTH_LONG)
+        Snackbar.make(this.requireView(), text, Snackbar.LENGTH_LONG)
             .show()
     }
 
@@ -127,7 +130,8 @@ class SearchListFragment : Fragment(R.layout.fragment_list) {
                     bundle.putInt("id", it)
                     findNavController().navigate(
                         R.id.action_searchFragment_to_detailsFragment,
-                        bundle
+                        bundle,
+                        options
                     )
                 }
                 binding.rvCities.adapter = cityAdapter
@@ -142,7 +146,7 @@ class SearchListFragment : Fragment(R.layout.fragment_list) {
                 bundle.putInt("id", it.id)
                 findNavController().navigate(
                     R.id.action_searchFragment_to_detailsFragment,
-                    bundle
+                    bundle,
                 )
             }, onFailure = {
                 showMessage("City not found")
@@ -159,5 +163,13 @@ class SearchListFragment : Fragment(R.layout.fragment_list) {
             this,
             factory
         )[SearchListFragmentViewModel::class.java]
+
+        options = NavOptions.Builder()
+            .setLaunchSingleTop(true)
+            .setEnterAnim(R.anim.enter_from_right)
+            .setExitAnim(R.anim.fade_out)
+            .setPopEnterAnim(R.anim.fade_in)
+            .setPopExitAnim(R.anim.exit_to_right)
+            .build()
     }
 }

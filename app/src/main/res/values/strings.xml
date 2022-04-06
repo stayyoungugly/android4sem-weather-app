@@ -12,4 +12,7 @@
     <string name="tv_temp_number">%.1f °C</string>
     <string name="tv_humidity_number">%1$d %%</string>
     <string name="tv_pressure_number">%1$d P</string>
+    <string name="city_transition_name">CityTransitionName</string>
+    <string name="big_size">32sp</string>
+    <string name="small_size">24sp</string>
 </resources>
