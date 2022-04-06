@@ -3,15 +3,16 @@
     <string name="kazan">Kazan</string>
     <string name="_9_c">9°C</string>
     <string name="weather_in_nearby_cities">Weather in nearby cities</string>
-    <string name="_1230_p">1230 P</string>
     <string name="pressure">PRESSURE</string>
-    <string name="_100">100</string>
     <string name="humidity">HUMIDITY</string>
-    <string name="north_west">North-West</string>
-    <string name="_32_km_h">32 km/h</string>
     <string name="direction">DIRECTION</string>
     <string name="wind">WIND</string>
-    <string name="kazan_caps">KAZAN</string>
-    <string name="feels_like_10_c">Feels like -10°C</string>
-    <string name="sunny">SUNNY</string>
+    <string name="tv_wind_number">%.2f m/s</string>
+    <string name="tv_temp_feels">Feels like %.1f °C</string>
+    <string name="tv_temp_number">%.1f °C</string>
+    <string name="tv_humidity_number">%1$d %%</string>
+    <string name="tv_pressure_number">%1$d P</string>
+    <string name="city_transition_name">CityTransitionName</string>
+    <string name="big_size">32sp</string>
+    <string name="small_size">24sp</string>
 </resources>

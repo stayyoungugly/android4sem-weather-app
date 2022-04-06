@@ -12,6 +12,7 @@
         android:layout_marginStart="24dp"
         android:fontFamily="@font/font_bold"
         android:text="@string/kazan"
+        android:transitionName="@string/city_transition_name"
         android:textColor="@color/black"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"

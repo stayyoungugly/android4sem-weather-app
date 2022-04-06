@@ -2,6 +2,13 @@ package com.itis.androidsemfour.di
 
 import com.itis.androidsemfour.BuildConfig
 import com.itis.androidsemfour.data.api.Api
+import com.itis.androidsemfour.data.api.mapper.CityMapper
+import com.itis.androidsemfour.data.api.mapper.WeatherMapper
+import com.itis.androidsemfour.data.impl.WeatherRepositoryImpl
+import com.itis.androidsemfour.domain.repository.WeatherRepository
+import com.itis.androidsemfour.domain.usecase.GetCitiesUseCase
+import com.itis.androidsemfour.domain.usecase.GetWeatherByIdUseCase
+import com.itis.androidsemfour.domain.usecase.GetWeatherByNameUseCase
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -67,4 +74,19 @@ object DIContainer {
             .build()
             .create(Api::class.java)
     }
+
+    private val weatherRepository: WeatherRepository = WeatherRepositoryImpl(
+        api = api,
+        weatherMapper = WeatherMapper(),
+        cityMapper = CityMapper()
+    )
+    val getCitiesUseCase: GetCitiesUseCase = GetCitiesUseCase(
+        weatherRepository = weatherRepository
+    )
+    val getWeatherByNameUseCase: GetWeatherByNameUseCase = GetWeatherByNameUseCase(
+        weatherRepository = weatherRepository
+    )
+    val getWeatherByIdUseCase: GetWeatherByIdUseCase = GetWeatherByIdUseCase(
+        weatherRepository = weatherRepository
+    )
 }

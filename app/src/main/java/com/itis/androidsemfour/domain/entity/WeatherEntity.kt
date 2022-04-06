@@ -2,7 +2,7 @@ package com.itis.androidsemfour.domain.entity
 
 data class WeatherEntity(
     var id: Int,
-    var name: String,
+    var cityName: String,
     var temp: Double,
     var tempMax: Double,
     var tempMin: Double,
@@ -14,5 +14,6 @@ data class WeatherEntity(
     var feelsLike: Double,
     var windSpeed: Double,
     var windDeg: Int,
-    var icon: String
+    var icon: String,
+    var windDirection: String
 )

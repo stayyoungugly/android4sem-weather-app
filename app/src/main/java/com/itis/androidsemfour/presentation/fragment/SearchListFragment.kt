@@ -8,24 +8,22 @@ import android.view.View
 import android.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
-import com.itis.androidsemfour.presentation.adapter.CityAdapter
 import com.itis.androidsemfour.R
-import com.itis.androidsemfour.data.api.mapper.CityMapper
-import com.itis.androidsemfour.data.api.mapper.WeatherMapper
-import com.itis.androidsemfour.data.impl.WeatherRepositoryImpl
 import com.itis.androidsemfour.databinding.FragmentListBinding
 import com.itis.androidsemfour.di.DIContainer
-import com.itis.androidsemfour.domain.entity.CityEntity
-import com.itis.androidsemfour.domain.usecase.GetCitiesUseCase
-import com.itis.androidsemfour.domain.usecase.GetWeatherByNameUseCase
+import com.itis.androidsemfour.presentation.adapter.CityAdapter
+import com.itis.androidsemfour.presentation.fragment.viewmodel.SearchListFragmentViewModel
+import com.itis.androidsemfour.utils.ViewModelFactory
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
 import timber.log.Timber
+
 
 private const val CNT_10 = 10
 private const val DEFAULT_LAT = 51.59
@@ -33,15 +31,14 @@ private const val DEFAULT_LON = 45.96
 private const val REQUEST_CODE_100 = 100
 
 class SearchListFragment : Fragment(R.layout.fragment_list) {
-    val bundle = Bundle()
+    private val bundle = Bundle()
     private var userLatitude: Double = DEFAULT_LAT
     private var userLongitude: Double = DEFAULT_LON
+    private lateinit var options: NavOptions
+    private lateinit var viewModel: SearchListFragmentViewModel
     private lateinit var userLocation: FusedLocationProviderClient
     private lateinit var binding: FragmentListBinding
-    private lateinit var cities: List<CityEntity>
     private lateinit var cityAdapter: CityAdapter
-    private lateinit var getCitiesUseCase: GetCitiesUseCase
-    private lateinit var getWeatherByNameUseCase: GetWeatherByNameUseCase
 
     override fun onViewCreated(
         view: View,
@@ -50,25 +47,15 @@ class SearchListFragment : Fragment(R.layout.fragment_list) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentListBinding.bind(view)
         initObjects()
+        initObservers()
         createLocationList()
+        createCityRecyclerView()
         startCitySearch()
     }
 
     private fun createCityRecyclerView() {
         lifecycleScope.launch {
-            try {
-                cities = getCitiesUseCase(userLatitude, userLongitude, CNT_10)
-                cityAdapter = CityAdapter(cities) {
-                    bundle.putInt("id", it)
-                    findNavController().navigate(
-                        R.id.action_searchFragment_to_detailsFragment,
-                        bundle
-                    )
-                }
-                binding.rvCities.adapter = cityAdapter
-            } catch (ex: HttpException) {
-                Timber.e(ex.message.toString())
-            }
+            viewModel.getCityList(userLatitude, userLongitude, CNT_10)
         }
     }
 
@@ -90,14 +77,17 @@ class SearchListFragment : Fragment(R.layout.fragment_list) {
                 if (location != null) {
                     userLongitude = location.longitude
                     userLatitude = location.latitude
-                    Snackbar.make(binding.root, "Location was found", Snackbar.LENGTH_LONG).show()
+                    showMessage("Location was found")
                 } else {
-                    Snackbar.make(binding.root, "Location was not found", Snackbar.LENGTH_LONG)
-                        .show()
+                    showMessage("Location was not found")
                 }
             }
         }
-        createCityRecyclerView()
+    }
+
+    private fun showMessage(text: String) {
+        Snackbar.make(this.requireView(), text, Snackbar.LENGTH_LONG)
+            .show()
     }
 
     override fun onRequestPermissionsResult(
@@ -110,8 +100,7 @@ class SearchListFragment : Fragment(R.layout.fragment_list) {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     createLocationList()
                 } else {
-                    Snackbar.make(binding.root, "Geolocation access denied", Snackbar.LENGTH_SHORT)
-                        .show()
+                    showMessage("Geolocation access denied")
                 }
             }
         }
@@ -121,22 +110,7 @@ class SearchListFragment : Fragment(R.layout.fragment_list) {
         binding.svCities.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(cityName: String): Boolean {
                 lifecycleScope.launch {
-                    try {
-                        val cityWeather = getWeatherByNameUseCase(cityName)
-                        val cityId = cityWeather.id
-                        bundle.putInt("id", cityId)
-                        findNavController().navigate(
-                            R.id.action_searchFragment_to_detailsFragment,
-                            bundle
-                        )
-                    } catch (ex: HttpException) {
-                        Snackbar.make(
-                            binding.root,
-                            "City Not Found",
-                            Snackbar.LENGTH_LONG
-                        ).show()
-                        Timber.e(ex.message.toString())
-                    }
+                    viewModel.getWeatherByName(cityName)
                 }
                 return false
             }
@@ -147,20 +121,55 @@ class SearchListFragment : Fragment(R.layout.fragment_list) {
         })
     }
 
+    private fun initObservers() {
+        viewModel.cityList.observe(viewLifecycleOwner) { list ->
+            list.fold(onSuccess = { listOfCity ->
+                cityAdapter = CityAdapter(
+                    listOfCity
+                ) {
+                    bundle.putInt("id", it)
+                    findNavController().navigate(
+                        R.id.action_searchFragment_to_detailsFragment,
+                        bundle,
+                        options
+                    )
+                }
+                binding.rvCities.adapter = cityAdapter
+            }, onFailure = {
+                showMessage("City not found")
+            }
+            )
+        }
+
+        viewModel.weather.observe(viewLifecycleOwner) { city ->
+            city.fold(onSuccess = {
+                bundle.putInt("id", it.id)
+                findNavController().navigate(
+                    R.id.action_searchFragment_to_detailsFragment,
+                    bundle,
+                )
+            }, onFailure = {
+                showMessage("City not found")
+            })
+        }
+        viewModel.error.observe(viewLifecycleOwner) {
+            Timber.e(it.message.toString())
+        }
+    }
+
     private fun initObjects() {
-        getWeatherByNameUseCase = GetWeatherByNameUseCase(
-            weatherRepository = WeatherRepositoryImpl(
-                api = DIContainer.api,
-                weatherMapper = WeatherMapper(),
-                cityMapper = CityMapper()
-            )
-        )
-        getCitiesUseCase = GetCitiesUseCase(
-            weatherRepository = WeatherRepositoryImpl(
-                api = DIContainer.api,
-                weatherMapper = WeatherMapper(),
-                cityMapper = CityMapper()
-            )
-        )
+        val factory = ViewModelFactory(DIContainer)
+        viewModel = ViewModelProvider(
+            this,
+            factory
+        )[SearchListFragmentViewModel::class.java]
+
+        options = NavOptions.Builder()
+            .setLaunchSingleTop(true)
+            .setEnterAnim(R.anim.enter_from_right)
+            .setExitAnim(R.anim.fade_out)
+            .setPopEnterAnim(R.anim.fade_in)
+            .setPopExitAnim(R.anim.exit_to_right)
+            .build()
     }
 }
