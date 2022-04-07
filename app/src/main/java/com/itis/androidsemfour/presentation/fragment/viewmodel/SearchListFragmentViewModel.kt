@@ -9,8 +9,9 @@ import com.itis.androidsemfour.domain.entity.WeatherEntity
 import com.itis.androidsemfour.domain.usecase.GetCitiesUseCase
 import com.itis.androidsemfour.domain.usecase.GetWeatherByNameUseCase
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SearchListFragmentViewModel(
+class SearchListFragmentViewModel @Inject constructor(
     private val getCitiesUseCase: GetCitiesUseCase,
     private val getWeatherByNameUseCase: GetWeatherByNameUseCase
 ) : ViewModel() {

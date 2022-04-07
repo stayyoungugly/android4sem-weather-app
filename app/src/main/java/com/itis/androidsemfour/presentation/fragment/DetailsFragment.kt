@@ -3,27 +3,38 @@ package com.itis.androidsemfour.presentation.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.Priority
-import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.itis.androidsemfour.R
 import com.itis.androidsemfour.databinding.FragmentDetailsBinding
-import com.itis.androidsemfour.di.DIContainer
 import com.itis.androidsemfour.domain.entity.WeatherEntity
+import com.itis.androidsemfour.presentation.activity.MainActivity
 import com.itis.androidsemfour.presentation.fragment.viewmodel.DetailsFragmentViewModel
-import com.itis.androidsemfour.utils.ViewModelFactory
+import com.itis.androidsemfour.utils.AppViewModelFactory
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
 class DetailsFragment : Fragment(R.layout.fragment_details) {
-    private lateinit var binding: FragmentDetailsBinding
-    private lateinit var glide: RequestManager
-    private lateinit var viewModel: DetailsFragmentViewModel
+    @Inject
+    lateinit var factory: AppViewModelFactory
 
+    private lateinit var binding: FragmentDetailsBinding
+
+    private val glide by lazy {
+        Glide.with(this)
+    }
+
+    private val viewModel: DetailsFragmentViewModel by viewModels { factory }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        (activity as MainActivity).appComponent.inject(this)
+        super.onCreate(savedInstanceState)
+    }
 
     override fun onViewCreated(
         view: View,
@@ -31,7 +42,6 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     ) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentDetailsBinding.bind(view)
-        initObjects()
         initObservers()
         val id = arguments?.getInt("id")
         if (id != null) {
@@ -75,15 +85,5 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         viewModel.error.observe(viewLifecycleOwner) {
             Timber.e(it.message.toString())
         }
-    }
-
-    private fun initObjects() {
-        glide = Glide.with(this)
-        val factory = ViewModelFactory(DIContainer)
-        viewModel = ViewModelProvider(
-            this,
-            factory
-        )[DetailsFragmentViewModel::class.java]
-
     }
 }

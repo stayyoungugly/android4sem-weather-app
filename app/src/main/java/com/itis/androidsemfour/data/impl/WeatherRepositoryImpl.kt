@@ -6,8 +6,9 @@ import com.itis.androidsemfour.data.api.mapper.WeatherMapper
 import com.itis.androidsemfour.domain.repository.WeatherRepository
 import com.itis.androidsemfour.domain.entity.CityEntity
 import com.itis.androidsemfour.domain.entity.WeatherEntity
+import javax.inject.Inject
 
-class WeatherRepositoryImpl(
+class WeatherRepositoryImpl @Inject constructor(
     private val api: Api,
     private val weatherMapper: WeatherMapper,
     private val cityMapper: CityMapper
