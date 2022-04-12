@@ -15,10 +15,9 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Named
 
 private const val BASE_URL = "https://api.openweathermap.org/data/2.5/"
-private const val API_KEY = "3917f9e2c8cbd4b0359e5f15e9c21a89"
+private const val API_KEY = BuildConfig.apiKey
 private const val QUERY_API_KEY = "appid"
 private const val QUERY_UNITS = "units"
 private const val UNITS = "metric"

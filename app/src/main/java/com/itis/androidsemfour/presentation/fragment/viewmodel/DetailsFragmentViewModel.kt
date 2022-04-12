@@ -6,11 +6,8 @@ import com.itis.androidsemfour.domain.usecase.GetWeatherByIdUseCase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 
-
-@HiltViewModel
 class DetailsFragmentViewModel @AssistedInject constructor(
     private val getWeatherByIdUseCase: GetWeatherByIdUseCase,
     @Assisted private val cityId: Int
@@ -22,10 +19,10 @@ class DetailsFragmentViewModel @AssistedInject constructor(
     private var _error: MutableLiveData<Exception> = MutableLiveData()
     val error: LiveData<Exception> = _error
 
-    fun getWeatherById(id: Int) {
+    fun getWeatherById() {
         viewModelScope.launch {
             try {
-                val weather = getWeatherByIdUseCase(id)
+                val weather = getWeatherByIdUseCase(cityId)
                 _weather.value = Result.success(weather)
             } catch (ex: Exception) {
                 _weather.value = Result.failure(ex)
@@ -35,14 +32,14 @@ class DetailsFragmentViewModel @AssistedInject constructor(
     }
 
     @AssistedFactory
-    interface WeatherViewModelFactory {
+    interface DetailsViewModelFactory {
         fun create(cityId: Int): DetailsFragmentViewModel
     }
 
     @Suppress("UNCHECKED_CAST")
     companion object {
         fun provideFactory(
-            assistedFactory: WeatherViewModelFactory,
+            assistedFactory: DetailsViewModelFactory,
             cityId: Int
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")

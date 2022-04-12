@@ -12,9 +12,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.itis.androidsemfour.R
 import com.itis.androidsemfour.databinding.FragmentDetailsBinding
 import com.itis.androidsemfour.domain.entity.WeatherEntity
-import com.itis.androidsemfour.presentation.activity.MainActivity
 import com.itis.androidsemfour.presentation.fragment.viewmodel.DetailsFragmentViewModel
-import com.itis.androidsemfour.utils.ViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -28,12 +26,16 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         Glide.with(this)
     }
 
-    private val id by lazy {
-        arguments?.getInt("id")
+    private val cityId by lazy {
+        arguments?.getInt("id") ?: 0
     }
 
-    private val viewModel: DetailsFragmentViewModel by viewModels { factory }
+    @Inject
+    lateinit var viewModelFactory: DetailsFragmentViewModel.DetailsViewModelFactory
 
+    private val viewModel: DetailsFragmentViewModel by viewModels {
+        DetailsFragmentViewModel.provideFactory(viewModelFactory, cityId)
+    }
 
     override fun onViewCreated(
         view: View,
@@ -42,14 +44,14 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentDetailsBinding.bind(view)
         initObservers()
-        if (id != null) {
-            getCityWeatherData(id)
+        if (cityId != 0) {
+            getCityWeatherData()
         }
     }
 
-    private fun getCityWeatherData(id: Int) {
+    private fun getCityWeatherData() {
         lifecycleScope.launch {
-            viewModel.getWeatherById(id)
+            viewModel.getWeatherById()
         }
     }
 
