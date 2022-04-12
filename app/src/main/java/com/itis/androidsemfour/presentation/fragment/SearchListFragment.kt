@@ -20,7 +20,7 @@ import com.itis.androidsemfour.databinding.FragmentListBinding
 import com.itis.androidsemfour.presentation.activity.MainActivity
 import com.itis.androidsemfour.presentation.adapter.CityAdapter
 import com.itis.androidsemfour.presentation.fragment.viewmodel.SearchListFragmentViewModel
-import com.itis.androidsemfour.utils.AppViewModelFactory
+import com.itis.androidsemfour.utils.ViewModelFactory
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -32,7 +32,7 @@ private const val REQUEST_CODE_100 = 100
 
 class SearchListFragment : Fragment(R.layout.fragment_list) {
     @Inject
-    lateinit var factory: AppViewModelFactory
+    lateinit var factory: ViewModelFactory
 
     private val bundle = Bundle()
     private var userLatitude: Double = DEFAULT_LAT

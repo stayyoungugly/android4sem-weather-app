@@ -14,27 +14,26 @@ import com.itis.androidsemfour.databinding.FragmentDetailsBinding
 import com.itis.androidsemfour.domain.entity.WeatherEntity
 import com.itis.androidsemfour.presentation.activity.MainActivity
 import com.itis.androidsemfour.presentation.fragment.viewmodel.DetailsFragmentViewModel
-import com.itis.androidsemfour.utils.AppViewModelFactory
+import com.itis.androidsemfour.utils.ViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class DetailsFragment : Fragment(R.layout.fragment_details) {
-    @Inject
-    lateinit var factory: AppViewModelFactory
-
     private lateinit var binding: FragmentDetailsBinding
 
     private val glide by lazy {
         Glide.with(this)
     }
 
+    private val id by lazy {
+        arguments?.getInt("id")
+    }
+
     private val viewModel: DetailsFragmentViewModel by viewModels { factory }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        (activity as MainActivity).appComponent.inject(this)
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onViewCreated(
         view: View,
@@ -43,7 +42,6 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentDetailsBinding.bind(view)
         initObservers()
-        val id = arguments?.getInt("id")
         if (id != null) {
             getCityWeatherData(id)
         }
