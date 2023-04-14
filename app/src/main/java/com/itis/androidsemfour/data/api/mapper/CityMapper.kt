@@ -4,7 +4,6 @@ import com.itis.androidsemfour.data.response.City
 import com.itis.androidsemfour.domain.entity.CityEntity
 
 class CityMapper {
-
     private fun mapToCityEntity(city: City): CityEntity =
         CityEntity(
             name = city.name,

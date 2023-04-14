@@ -12,28 +12,29 @@ import com.bumptech.glide.request.RequestOptions
 import com.itis.androidsemfour.R
 import com.itis.androidsemfour.databinding.FragmentDetailsBinding
 import com.itis.androidsemfour.domain.entity.WeatherEntity
-import com.itis.androidsemfour.presentation.activity.MainActivity
 import com.itis.androidsemfour.presentation.fragment.viewmodel.DetailsFragmentViewModel
-import com.itis.androidsemfour.utils.AppViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class DetailsFragment : Fragment(R.layout.fragment_details) {
-    @Inject
-    lateinit var factory: AppViewModelFactory
-
     private lateinit var binding: FragmentDetailsBinding
 
     private val glide by lazy {
         Glide.with(this)
     }
 
-    private val viewModel: DetailsFragmentViewModel by viewModels { factory }
+    private val cityId by lazy {
+        arguments?.getInt("id") ?: 0
+    }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        (activity as MainActivity).appComponent.inject(this)
-        super.onCreate(savedInstanceState)
+    @Inject
+    lateinit var viewModelFactory: DetailsFragmentViewModel.DetailsViewModelFactory
+
+    private val viewModel: DetailsFragmentViewModel by viewModels {
+        DetailsFragmentViewModel.provideFactory(viewModelFactory, cityId)
     }
 
     override fun onViewCreated(
@@ -43,15 +44,14 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentDetailsBinding.bind(view)
         initObservers()
-        val id = arguments?.getInt("id")
-        if (id != null) {
-            getCityWeatherData(id)
+        if (cityId != 0) {
+            getCityWeatherData()
         }
     }
 
-    private fun getCityWeatherData(id: Int) {
+    private fun getCityWeatherData() {
         lifecycleScope.launch {
-            viewModel.getWeatherById(id)
+            viewModel.getWeatherById()
         }
     }
 

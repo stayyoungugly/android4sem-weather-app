@@ -17,23 +17,19 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.itis.androidsemfour.R
 import com.itis.androidsemfour.databinding.FragmentListBinding
-import com.itis.androidsemfour.presentation.activity.MainActivity
 import com.itis.androidsemfour.presentation.adapter.CityAdapter
 import com.itis.androidsemfour.presentation.fragment.viewmodel.SearchListFragmentViewModel
-import com.itis.androidsemfour.utils.AppViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
 private const val CNT_10 = 10
 private const val DEFAULT_LAT = 51.59
 private const val DEFAULT_LON = 45.96
 private const val REQUEST_CODE_100 = 100
 
+@AndroidEntryPoint
 class SearchListFragment : Fragment(R.layout.fragment_list) {
-    @Inject
-    lateinit var factory: AppViewModelFactory
-
     private val bundle = Bundle()
     private var userLatitude: Double = DEFAULT_LAT
     private var userLongitude: Double = DEFAULT_LON
@@ -48,16 +44,11 @@ class SearchListFragment : Fragment(R.layout.fragment_list) {
             .build()
     }
 
-    private val viewModel: SearchListFragmentViewModel by viewModels { factory }
+    private val viewModel: SearchListFragmentViewModel by viewModels()
 
     private lateinit var userLocation: FusedLocationProviderClient
     private lateinit var binding: FragmentListBinding
     private lateinit var cityAdapter: CityAdapter
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        (activity as MainActivity).appComponent.inject(this)
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onViewCreated(
         view: View,
@@ -81,7 +72,7 @@ class SearchListFragment : Fragment(R.layout.fragment_list) {
         if (context?.let {
                 ActivityCompat.checkSelfPermission(
                     it,
-                    Manifest.permission.ACCESS_FINE_LOCATION
+                    Manifest.permission.ACCESS_FINE_LOCATION,
                 )
             } == PackageManager.PERMISSION_DENIED) {
             val permissions = arrayOf(

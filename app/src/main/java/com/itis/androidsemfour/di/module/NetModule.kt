@@ -2,26 +2,31 @@ package com.itis.androidsemfour.di.module
 
 import com.itis.androidsemfour.BuildConfig
 import com.itis.androidsemfour.data.api.Api
+import com.itis.androidsemfour.di.qualifier.ApiInterceptorQualifier
+import com.itis.androidsemfour.di.qualifier.LoggingInterceptorQualifier
+import com.itis.androidsemfour.di.qualifier.UnitsInterceptorQualifier
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Named
 
 private const val BASE_URL = "https://api.openweathermap.org/data/2.5/"
-private const val API_KEY = "3917f9e2c8cbd4b0359e5f15e9c21a89"
+private const val API_KEY = BuildConfig.apiKey
 private const val QUERY_API_KEY = "appid"
 private const val QUERY_UNITS = "units"
 private const val UNITS = "metric"
 
 @Module
+@InstallIn(SingletonComponent::class)
 class NetModule {
     @Provides
-    @Named("apiKey")
+    @ApiInterceptorQualifier
     fun apiKeyInterceptor(): Interceptor = Interceptor { chain ->
         val original = chain.request()
         val newURL = original.url.newBuilder()
@@ -36,7 +41,7 @@ class NetModule {
     }
 
     @Provides
-    @Named("units")
+    @UnitsInterceptorQualifier
     fun unitsInterceptor(): Interceptor = Interceptor { chain ->
         val original = chain.request()
         val newURL: HttpUrl = original.url.newBuilder()
@@ -51,7 +56,7 @@ class NetModule {
     }
 
     @Provides
-    @Named("logger")
+    @LoggingInterceptorQualifier
     fun provideLoggingInterceptor(): Interceptor {
         return HttpLoggingInterceptor()
             .setLevel(
@@ -61,9 +66,9 @@ class NetModule {
 
     @Provides
     fun okhttp(
-        @Named("apiKey") apiKeyInterceptor: Interceptor,
-        @Named("logger") loggingInterceptor: Interceptor,
-        @Named("units") unitsInterceptor: Interceptor
+        @ApiInterceptorQualifier apiKeyInterceptor: Interceptor,
+        @LoggingInterceptorQualifier loggingInterceptor: Interceptor,
+        @UnitsInterceptorQualifier unitsInterceptor: Interceptor
     ): OkHttpClient =
         OkHttpClient.Builder()
             .addInterceptor(apiKeyInterceptor)

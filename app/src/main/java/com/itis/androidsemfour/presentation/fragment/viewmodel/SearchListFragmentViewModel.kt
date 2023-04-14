@@ -8,9 +8,11 @@ import com.itis.androidsemfour.domain.entity.CityEntity
 import com.itis.androidsemfour.domain.entity.WeatherEntity
 import com.itis.androidsemfour.domain.usecase.GetCitiesUseCase
 import com.itis.androidsemfour.domain.usecase.GetWeatherByNameUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class SearchListFragmentViewModel @Inject constructor(
     private val getCitiesUseCase: GetCitiesUseCase,
     private val getWeatherByNameUseCase: GetWeatherByNameUseCase

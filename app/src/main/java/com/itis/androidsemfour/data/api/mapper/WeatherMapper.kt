@@ -4,7 +4,6 @@ import com.itis.androidsemfour.data.response.WeatherResponse
 import com.itis.androidsemfour.domain.entity.WeatherEntity
 
 class WeatherMapper {
-
     fun mapToWeatherEntity(response: WeatherResponse): WeatherEntity =
         WeatherEntity(
             id = response.id,
